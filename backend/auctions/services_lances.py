@@ -5,6 +5,7 @@ from decimal import Decimal
 from django.db import transaction
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
+from datetime import timedelta
 
 from .models import Carteira, Lance, Lote
 
@@ -147,6 +148,11 @@ def registrar_lance(*, lote_id, participante, valor):
         hash_anterior=hash_anterior,
         hash_atual=hash_atual,
     )
+    tempo_restante = lote.encerramento - criado_em
+
+    if tempo_restante <= timedelta(minutes=2):
+        lote.encerramento += timedelta(minutes=2)
+        lote.save(update_fields=["encerramento"])
 
     return lance
 

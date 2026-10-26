@@ -21,7 +21,6 @@ def encerrar_leilao(lote_id):
     if timezone.now() < lote.encerramento:
         raise ValidationError("O horário do leilão ainda não terminou.")
 
-    # Busca o maior lance registrado.
     lance_vencedor = (
         Lance.objects
         .filter(lote=lote)
@@ -29,7 +28,6 @@ def encerrar_leilao(lote_id):
         .first()
     )
 
-    # Se ninguém deu lance, encerra sem gerar comprovante.
     if lance_vencedor is None:
         lote.status = Lote.Status.ENCERRADO
         lote.save(update_fields=["status"])
@@ -37,7 +35,6 @@ def encerrar_leilao(lote_id):
 
     valor_final = lance_vencedor.valor
 
-    # Busca as carteiras do vencedor e do leiloeiro.
     carteira_vencedor = Carteira.objects.select_for_update().get(
         usuario=lance_vencedor.participante
     )
@@ -49,21 +46,17 @@ def encerrar_leilao(lote_id):
         id=carteira_leiloeiro.id
     )
 
-    # Confere se o dinheiro do lance está reservado.
     if carteira_vencedor.saldo_reservado < valor_final:
         raise ValidationError(
             "O saldo reservado do vencedor é insuficiente para concluir o pagamento."
         )
 
-    # Confirma o pagamento
     carteira_vencedor.saldo_reservado -= valor_final
     carteira_vencedor.save(update_fields=["saldo_reservado"])
 
-    # O leiloeiro recebe o valor final.
     carteira_leiloeiro.saldo_disponivel += valor_final
     carteira_leiloeiro.save(update_fields=["saldo_disponivel"])
 
-    # Registra o comprovante da transação.
     comprovante = Comprovante.objects.create(
         lote=lote,
         vencedor=lance_vencedor.participante,

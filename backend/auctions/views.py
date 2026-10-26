@@ -92,13 +92,13 @@ class CriarLanceView(APIView):
 
 @api_view(["GET"])
 def auditar_historico_view(request, lote_id):
-    resultado = verificar_historico(lote_id)
-
     if not Lote.objects.filter(id=lote_id).exists():
         return Response(
             {"erro": "Lote não encontrado."},
             status=status.HTTP_404_NOT_FOUND,
         )
+
+    resultado = verificar_historico(lote_id)
 
     codigo_status = (
         status.HTTP_200_OK
@@ -172,3 +172,20 @@ class ListaComprovantesView(generics.ListAPIView):
         "leiloeiro",
     ).order_by("-gerado_em")
     permission_classes = [IsAuthenticated]
+
+
+class HistoricoLancesView(generics.ListAPIView):
+    serializer_class = LanceSerializer
+
+    def get_queryset(self):
+        lote_id = self.kwargs["lote_id"]
+
+        if not Lote.objects.filter(id=lote_id).exists():
+            return Lance.objects.none()
+
+        return (
+            Lance.objects
+            .filter(lote_id=lote_id)
+            .select_related("participante", "lote")
+            .order_by("criado_em", "id")
+        )
