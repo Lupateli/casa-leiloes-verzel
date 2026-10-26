@@ -58,7 +58,7 @@ class TesteEncerramentoLeilao(TestCase):
         registrar_lance(
             lote_id=self.lote.id,
             participante=self.participante,
-            valor=Decimal("50.00"),
+            valor=Decimal("51.00"),
         )
 
         self.finalizar_horario_lote()
@@ -67,7 +67,7 @@ class TesteEncerramentoLeilao(TestCase):
         self.assertIsNotNone(comprovante)
         self.assertEqual(comprovante.vencedor, self.participante)
         self.assertEqual(comprovante.leiloeiro, self.leiloeiro)
-        self.assertEqual(comprovante.valor_pago, Decimal("50.00"))
+        self.assertEqual(comprovante.valor_pago, Decimal("51.00"))
 
         self.carteira_vencedor.refresh_from_db()
         self.carteira_leiloeiro.refresh_from_db()
@@ -79,7 +79,7 @@ class TesteEncerramentoLeilao(TestCase):
         )
         self.assertEqual(
             self.carteira_leiloeiro.saldo_disponivel,
-            Decimal("50.00"),
+            Decimal("51.00"),
         )
         self.assertEqual(self.lote.status, Lote.Status.ENCERRADO)
         self.assertEqual(Comprovante.objects.count(), 1)
@@ -99,7 +99,7 @@ class TesteEncerramentoLeilao(TestCase):
         registrar_lance(
             lote_id=self.lote.id,
             participante=self.participante,
-            valor=Decimal("50.00"),
+            valor=Decimal("51.00"),
         )
 
         self.finalizar_horario_lote()

@@ -46,19 +46,19 @@ class TesteRegistroLances(TestCase):
         lance = registrar_lance(
             lote_id=self.lote.id,
             participante=self.participante,
-            valor=Decimal("50.00"),
+            valor=Decimal("51.00"),
         )
 
-        self.assertEqual(lance.valor, Decimal("50.00"))
+        self.assertEqual(lance.valor, Decimal("51.00"))
 
         self.carteira.refresh_from_db()
         self.assertEqual(
             self.carteira.saldo_disponivel,
-            Decimal("50.00"),
+            Decimal("49.00"),
         )
         self.assertEqual(
             self.carteira.saldo_reservado,
-            Decimal("50.00"),
+            Decimal("51.00"),
         )
 
     def test_rejeita_lance_acima_do_saldo(self):
@@ -75,7 +75,7 @@ class TesteRegistroLances(TestCase):
         registrar_lance(
             lote_id=self.lote.id,
             participante=self.participante,
-            valor=Decimal("50.00"),
+            valor=Decimal("51.00"),
         )
 
         with self.assertRaises(ValidationError):
@@ -87,11 +87,41 @@ class TesteRegistroLances(TestCase):
 
         self.assertEqual(Lance.objects.count(), 1)
 
+
+    def test_rejeita_lance_igual_ao_minimo_permitido(self):
+        registrar_lance(
+            lote_id=self.lote.id,
+            participante=self.participante,
+            valor=Decimal("51.00"),
+        )
+
+        outro_participante = Usuario.objects.create_user(
+            username="outro_participante",
+            password="teste123",
+            tipo="PARTICIPANTE",
+        )
+
+        Carteira.objects.create(
+            usuario=outro_participante,
+            saldo_disponivel=Decimal("100.00"),
+            saldo_reservado=Decimal("0.00"),
+        )
+
+        with self.assertRaises(ValidationError):
+            registrar_lance(
+                lote_id=self.lote.id,
+                participante=outro_participante,
+                valor=Decimal("56.00"),
+            )
+
+        self.assertEqual(Lance.objects.count(), 1)
+
+
     def test_historico_integro(self):
         registrar_lance(
             lote_id=self.lote.id,
             participante=self.participante,
-            valor=Decimal("50.00"),
+            valor=Decimal("51.00"),
         )
 
         resultado = verificar_historico(self.lote.id)
@@ -106,7 +136,7 @@ class TesteRegistroLances(TestCase):
         lance = registrar_lance(
             lote_id=self.lote.id,
             participante=self.participante,
-            valor=Decimal("50.00"),
+            valor=Decimal("51.00"),
         )
 
         # Simula uma adulteração sem atualizar os hashes.
@@ -138,7 +168,7 @@ class TesteRegistroLances(TestCase):
             registrar_lance(
                 lote_id=self.lote.id,
                 participante=self.participante,
-                valor=Decimal("50.00"),
+                valor=Decimal("51.00"),
             )
 
         self.lote.refresh_from_db()
@@ -163,7 +193,7 @@ class TesteRegistroLances(TestCase):
             registrar_lance(
                 lote_id=self.lote.id,
                 participante=self.participante,
-                valor=Decimal("50.00"),
+                valor=Decimal("51.00"),
             )
 
         self.lote.refresh_from_db()

@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import generics
 
-from .models import Lote, Lance, Comprovante
+from .models import Lote, Lance, Comprovante, Carteira
 from .serializers import LoteSerializer, LanceSerializer, ComprovanteSerializer
 from .services import buscar_livros
 from .services_lances import registrar_lance, verificar_historico
@@ -189,3 +189,37 @@ class HistoricoLancesView(generics.ListAPIView):
             .select_related("participante", "lote")
             .order_by("criado_em", "id")
         )
+
+class DepositarSaldoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        from decimal import Decimal, InvalidOperation
+        from django.db import transaction
+
+        try:
+            valor = Decimal(str(request.data.get("valor", "")))
+        except InvalidOperation:
+            return Response(
+                {"erro": "Informe um valor válido."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not valor.is_finite() or valor <= 0 or valor.as_tuple().exponent < -2:
+            return Response(
+                {"erro": "O depósito deve ser positivo e ter no máximo duas casas decimais."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        with transaction.atomic():
+            carteira, _ = Carteira.objects.get_or_create(
+                usuario=request.user
+            )
+            carteira.saldo_disponivel += valor
+            carteira.save(update_fields=["saldo_disponivel"])
+
+        return Response({
+            "mensagem": "Depósito realizado com sucesso.",
+            "valor_depositado": str(valor),
+            "saldo_disponivel": str(carteira.saldo_disponivel),
+        }, status=status.HTTP_200_OK)

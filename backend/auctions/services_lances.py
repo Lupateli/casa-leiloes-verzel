@@ -78,9 +78,9 @@ def registrar_lance(*, lote_id, participante, valor):
     else:
         valor_minimo = lote.lance_inicial
 
-    if valor < valor_minimo:
+    if valor <= valor_minimo:
         raise ValidationError({
-            "valor": f"O lance mínimo permitido é R$ {valor_minimo:.2f}."
+            "valor": f"O lance deve ser maior que R$ {valor_minimo:.2f}."
         })
 
     carteira, _ = Carteira.objects.get_or_create(
