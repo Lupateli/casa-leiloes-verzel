@@ -166,12 +166,23 @@ def encerrar_leilao_view(request, lote_id):
 
 class ListaComprovantesView(generics.ListAPIView):
     serializer_class = ComprovanteSerializer
-    queryset = Comprovante.objects.select_related(
-        "lote",
-        "vencedor",
-        "leiloeiro",
-    ).order_by("-gerado_em")
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        usuario = self.request.user
+
+        comprovantes = Comprovante.objects.select_related(
+            "lote",
+            "vencedor",
+            "leiloeiro",
+        )
+
+        if usuario.tipo == "LEILOEIRO":
+            comprovantes = comprovantes.filter(leiloeiro=usuario)
+        else:
+            comprovantes = comprovantes.filter(vencedor=usuario)
+
+        return comprovantes.order_by("-gerado_em")
 
 
 class HistoricoLancesView(generics.ListAPIView):
