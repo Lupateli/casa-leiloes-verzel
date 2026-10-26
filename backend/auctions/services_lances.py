@@ -148,6 +148,9 @@ def registrar_lance(*, lote_id, participante, valor):
         hash_anterior=hash_anterior,
         hash_atual=hash_atual,
     )
+    lote.ultimo_hash_lance = lance.hash_atual
+    lote.save(update_fields=["ultimo_hash_lance"])
+
     tempo_restante = lote.encerramento - criado_em
 
     if tempo_restante <= timedelta(minutes=2):
@@ -157,6 +160,8 @@ def registrar_lance(*, lote_id, participante, valor):
     return lance
 
 def verificar_historico(lote_id):
+    lote = Lote.objects.get(id=lote_id)
+
     lances = Lance.objects.filter(
         lote_id=lote_id
     ).order_by("criado_em", "id")
@@ -187,6 +192,13 @@ def verificar_historico(lote_id):
             }
 
         hash_anterior_esperado = lance.hash_atual
+
+    if hash_anterior_esperado != lote.ultimo_hash_lance:
+        return {
+            "integro": False,
+            "lance_id": None,
+            "motivo": "O último lance foi removido ou o histórico foi alterado."
+        }
 
     return {
         "integro": True,

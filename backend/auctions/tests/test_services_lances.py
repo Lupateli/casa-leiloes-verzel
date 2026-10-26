@@ -152,6 +152,20 @@ class TesteRegistroLances(TestCase):
             resultado["motivo"],
             "Os dados do lance foram alterados.",
         )
+        
+    def test_detecta_exclusao_de_lance(self):
+        lance = registrar_lance(
+            lote_id=self.lote.id,
+            participante=self.participante,
+            valor=Decimal("51.00"),
+        )
+
+        # Simula a exclusão de um lance sem atualizar o histórico.
+        Lance.objects.filter(id=lance.id).delete()
+
+        resultado = verificar_historico(self.lote.id)
+
+        self.assertFalse(resultado["integro"])
 
     def test_lance_nos_dois_minutos_finais_estende_leilao(self):
         agora = timezone.now()

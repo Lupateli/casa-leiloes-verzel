@@ -57,6 +57,12 @@ class Lote(models.Model):
         default=Status.AGENDADO,
     )
 
+    ultimo_hash_lance = models.CharField(
+        max_length=64,
+        blank=True,
+        default="",
+    )
+
     criado_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
