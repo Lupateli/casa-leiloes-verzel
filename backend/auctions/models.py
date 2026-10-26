@@ -109,3 +109,28 @@ class Lance(models.Model):
     def __str__(self):
         return f"Lance de R$ {self.valor} no lote {self.lote_id}"
 
+
+class Comprovante(models.Model):
+    lote = models.OneToOneField(
+        Lote,
+        on_delete=models.PROTECT,
+        related_name="comprovante",
+    )
+    vencedor = models.ForeignKey(
+        "auctions.Usuario",
+        on_delete=models.PROTECT,
+        related_name="comprovantes_vencidos",
+    )
+    leiloeiro = models.ForeignKey(
+        "auctions.Usuario",
+        on_delete=models.PROTECT,
+        related_name="comprovantes_recebidos",
+    )
+    valor_pago = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+    )
+    gerado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comprovante do lote {self.lote_id}"

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Usuario, Lote, Carteira, Lance
+from .models import Usuario, Lote, Carteira, Lance, Comprovante
 
 
 @admin.register(Usuario)
@@ -37,3 +37,22 @@ class CarteiraAdmin(admin.ModelAdmin):
 class LanceAdmin(admin.ModelAdmin):
     list_display = ("lote", "participante", "valor", "criado_em")
     list_filter = ("criado_em",)
+
+
+@admin.register(Comprovante)
+class ComprovanteAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "lote",
+        "vencedor",
+        "leiloeiro",
+        "valor_pago",
+        "gerado_em",
+    )
+    readonly_fields = (
+        "lote",
+        "vencedor",
+        "leiloeiro",
+        "valor_pago",
+        "gerado_em",
+    )

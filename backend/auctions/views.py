@@ -5,11 +5,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import generics
 
-from .models import Lote, Lance
-from .serializers import LoteSerializer, LanceSerializer
+from .models import Lote, Lance, Comprovante
+from .serializers import LoteSerializer, LanceSerializer, ComprovanteSerializer
 from .services import buscar_livros
-from .services_lances import registrar_lance
-
+from .services_lances import registrar_lance, verificar_historico
+from .services_encerramento import encerrar_leilao
 
 
 @api_view(["GET"])
@@ -88,3 +88,87 @@ class CriarLanceView(APIView):
             LanceSerializer(lance).data,
             status=status.HTTP_201_CREATED,
         )
+
+
+@api_view(["GET"])
+def auditar_historico_view(request, lote_id):
+    resultado = verificar_historico(lote_id)
+
+    if not Lote.objects.filter(id=lote_id).exists():
+        return Response(
+            {"erro": "Lote não encontrado."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    codigo_status = (
+        status.HTTP_200_OK
+        if resultado["integro"]
+        else status.HTTP_409_CONFLICT
+    )
+
+    return Response(resultado, status=codigo_status)
+
+
+@api_view(["POST"])
+def encerrar_leilao_view(request, lote_id):
+    if not request.user.is_authenticated:
+        return Response(
+            {"erro": "Você precisa estar autenticado."},
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
+
+    try:
+        lote = Lote.objects.get(id=lote_id)
+    except Lote.DoesNotExist:
+        return Response(
+            {"erro": "Lote não encontrado."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    if request.user.tipo != "LEILOEIRO" or lote.leiloeiro_id != request.user.id:
+        return Response(
+            {"erro": "Somente o leiloeiro responsável pode encerrar este lote."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    try:
+        comprovante = encerrar_leilao(lote_id)
+    except Exception as erro:
+        from rest_framework.exceptions import ValidationError
+
+        if isinstance(erro, ValidationError):
+            return Response(
+                {"erro": erro.detail},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        raise
+
+    if comprovante is None:
+        return Response(
+            {
+                "mensagem": "Leilão encerrado sem lances.",
+                "lote_id": lote_id,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    return Response(
+        {
+            "mensagem": "Leilão encerrado com sucesso.",
+            "lote_id": lote_id,
+            "vencedor": comprovante.vencedor.username,
+            "leiloeiro": comprovante.leiloeiro.username,
+            "valor_pago": str(comprovante.valor_pago),
+            "comprovante_id": comprovante.id,
+        },
+        status=status.HTTP_200_OK,
+    )
+
+class ListaComprovantesView(generics.ListAPIView):
+    serializer_class = ComprovanteSerializer
+    queryset = Comprovante.objects.select_related(
+        "lote",
+        "vencedor",
+        "leiloeiro",
+    ).order_by("-gerado_em")
+    permission_classes = [IsAuthenticated]

@@ -6,6 +6,9 @@ from auctions.views import (
     buscar_livros_view,
     CriarLoteView,
     CriarLanceView,
+    auditar_historico_view,
+    encerrar_leilao_view,  
+    ListaComprovantesView,
 )
 
 urlpatterns = [
@@ -16,4 +19,7 @@ urlpatterns = [
     path("api/lotes/criar/", CriarLoteView.as_view()),
     path("api/lances/criar/", CriarLanceView.as_view()),
     path("api-auth/", include("rest_framework.urls")),
+    path("api/lotes/<int:lote_id>/auditoria/", auditar_historico_view,),
+    path("api/lotes/<int:lote_id>/encerrar/", encerrar_leilao_view, name="encerrar_leilao",),
+    path("api/comprovantes/", ListaComprovantesView.as_view(), name="lista_comprovantes",),
 ]
