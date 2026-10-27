@@ -14,7 +14,7 @@ load_dotenv(BASE_DIR.parent / ".env")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =os.getenv("DEBUG", "False").lower() == "true"
+DEBUG = True ##os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = [
     host.strip()
@@ -35,9 +35,12 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'auctions',
+    'corsheaders',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -128,9 +131,14 @@ AUTH_USER_MODEL = "auctions.Usuario"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]

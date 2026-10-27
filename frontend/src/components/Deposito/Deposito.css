@@ -1,0 +1,68 @@
+.deposito {
+  max-width: 420px;
+  margin: 30px auto;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(20, 36, 58, 0.06);
+}
+
+.deposito h2 {
+  margin: 0 0 20px;
+  color: #14243a;
+  font-size: 22px;
+}
+
+.deposito form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deposito label {
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.deposito input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  font-size: 15px;
+}
+
+.deposito input:focus {
+  border-color: #c5a15b;
+  outline: 2px solid rgba(197, 161, 91, 0.2);
+}
+
+.deposito button {
+  padding: 12px;
+  border: none;
+  border-radius: 7px;
+  background: #14243a;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.deposito button:hover {
+  background: #203956;
+}
+
+.deposito button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.deposito [role="status"] {
+  color: #267443;
+}
+
+.deposito [role="alert"] {
+  color: #b42318;
+}

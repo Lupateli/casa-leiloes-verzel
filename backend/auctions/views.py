@@ -4,6 +4,9 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import generics
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+
 
 from .models import Lote, Lance, Comprovante, Carteira
 from .serializers import LoteSerializer, LanceSerializer, ComprovanteSerializer
@@ -11,6 +14,7 @@ from .services import buscar_livros
 from .services_lances import registrar_lance, verificar_historico
 from .services_encerramento import encerrar_leilao
 
+    
 
 @api_view(["GET"])
 def health_check(request):
@@ -234,3 +238,24 @@ class DepositarSaldoView(APIView):
             "valor_depositado": str(valor),
             "saldo_disponivel": str(carteira.saldo_disponivel),
         }, status=status.HTTP_200_OK)
+
+class LoginView(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            data=request.data,
+            context={"request": request},
+        )
+        serializer.is_valid(raise_exception=True)
+
+        usuario = serializer.validated_data["user"]
+        token, _ = Token.objects.get_or_create(user=usuario)
+
+        return Response({
+            "token": token.key,
+            "usuario": {
+                "id": usuario.id,
+                "username": usuario.username,
+                "tipo": usuario.tipo,
+            },
+        }, status=status.HTTP_200_OK)
+    

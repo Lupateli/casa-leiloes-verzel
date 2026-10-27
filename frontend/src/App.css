@@ -1,0 +1,181 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  color: #202938;
+  background: #f7f8fa;
+
+  --azul-escuro: #14243a;
+  --azul-hover: #203956;
+  --dourado: #c5a15b;
+  --dourado-hover: #b18b43;
+  --fundo: #f7f8fa;
+  --texto: #202938;
+  --texto-secundario: #6b7280;
+  --borda: #e5e7eb;
+  --branco: #ffffff;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--fundo);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Botão principal */
+.primary-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 24px;
+  border: 1px solid var(--dourado);
+  border-radius: 6px;
+  background-color: var(--dourado);
+  color: var(--azul-escuro);
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.primary-button:hover {
+  background-color: var(--dourado-hover);
+  border-color: var(--dourado-hover);
+  transform: translateY(-1px);
+}
+
+/* Banner principal */
+.hero {
+  padding: 88px 8%;
+  background:
+    linear-gradient(
+      110deg,
+      rgba(20, 36, 58, 0.97),
+      rgba(32, 57, 86, 0.93)
+    );
+  color: var(--branco);
+}
+
+.hero h2 {
+  max-width: 700px;
+  margin: 0 0 20px;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -1px;
+}
+
+.hero p {
+  max-width: 570px;
+  margin: 0 0 30px;
+  color: #d5dce5;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+/* Seção dos leilões */
+.auctions {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 64px 8%;
+}
+
+.auctions > h2 {
+  margin: 0 0 32px;
+  color: var(--azul-escuro);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* Grade dos lotes */
+.lotes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+/* Rodapé */
+footer {
+  margin-top: 40px;
+  padding: 28px 8%;
+  background-color: var(--azul-escuro);
+  color: #d5dce5;
+  text-align: center;
+  font-size: 14px;
+}
+
+footer p {
+  margin: 0;
+}
+
+/* Tablets */
+@media (max-width: 900px) {
+  .hero {
+    padding: 72px 6%;
+  }
+
+  .auctions {
+    padding: 52px 6%;
+  }
+
+  .lotes-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Celulares */
+@media (max-width: 600px) {
+  .hero {
+    padding: 60px 24px;
+  }
+
+  .hero h2 {
+    font-size: 34px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .auctions {
+    padding: 40px 20px;
+  }
+
+  .auctions > h2 {
+    font-size: 26px;
+  }
+
+  .lotes-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  footer {
+    padding: 24px 20px;
+  }
+}

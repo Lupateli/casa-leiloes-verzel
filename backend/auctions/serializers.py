@@ -6,6 +6,15 @@ class LoteSerializer(serializers.ModelSerializer):
         source="leiloeiro.username",
         read_only=True,
     )
+    maior_lance = serializers.SerializerMethodField()
+
+    def get_maior_lance(self, obj):
+        lance = obj.lances.order_by("-criado_em", "-id").first()
+
+        if lance:
+            return str(lance.valor)
+
+        return str(obj.lance_inicial)
 
     class Meta:
         model = Lote
@@ -18,6 +27,7 @@ class LoteSerializer(serializers.ModelSerializer):
             "imagem_url",
             "api_item_id",
             "lance_inicial",
+            "maior_lance",
             "incremento_minimo",
             "inicio",
             "encerramento",
