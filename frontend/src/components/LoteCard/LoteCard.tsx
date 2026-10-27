@@ -1,12 +1,9 @@
-import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { Lote } from '../../types/Lote'
-import { darLance, buscarHistoricoLances } from '../../services/api'
 import './LoteCard.css'
 
 interface LoteCardProps {
   lote: Lote
-  token: string | null
-  tipoUsuario: string | null
 }
 
 function formatarMoeda(valor: string | number): string {
@@ -16,62 +13,27 @@ function formatarMoeda(valor: string | number): string {
   })
 }
 
-function LoteCard({ lote, token, tipoUsuario }: LoteCardProps) {
-  const [valor, setValor] = useState('')
-  const [mensagem, setMensagem] = useState('')
-  const [erro, setErro] = useState('')
-  const [carregando, setCarregando] = useState(false)
-  const [historico, setHistorico] = useState<any[]>([])
-  const [mostrarHistorico, setMostrarHistorico] = useState(false)
-  const [carregandoHistorico, setCarregandoHistorico] = useState(false)
-  const [erroHistorico, setErroHistorico] = useState('')
+function LoteCard({ lote }: LoteCardProps) {
+  const navegar = useNavigate()
 
-  async function handleHistorico() {
-    setMostrarHistorico(!mostrarHistorico)
-
-    if (mostrarHistorico) return
-
-    setCarregandoHistorico(true)
-    setErroHistorico('')
-
-    try {
-      const dados = await buscarHistoricoLances(lote.id)
-      setHistorico(dados)
-    } catch {
-      setErroHistorico('Não foi possível carregar o histórico.')
-    } finally {
-      setCarregandoHistorico(false)
-    }
-  }
-
-  async function handleLance(evento: FormEvent<HTMLFormElement>) {
-    evento.preventDefault()
-    setMensagem('')
-    setErro('')
-    setCarregando(true)
-
-    try {
-      const resultado = await darLance(
-        lote.id,
-        Number(valor),
-        token!,
-      )
-
-      setMensagem(
-        `Lance de ${formatarMoeda(resultado.valor)} registrado com sucesso!`,
-      )
-      setValor('')
-    } catch (erro) {
-      setErro(
-        erro instanceof Error ? erro.message : 'Não foi possível registrar o lance.',
-      )
-    } finally {
-      setCarregando(false)
-    }
+  function abrirDetalhes() {
+    navegar(`/lotes/${lote.id}`)
   }
 
   return (
-    <article className="lote-card">
+    <article
+      className="lote-card"
+      role="link"
+      tabIndex={0}
+      aria-label={`Ver detalhes do lote ${lote.nome}`}
+      onClick={abrirDetalhes}
+      onKeyDown={(evento) => {
+        if (evento.key === 'Enter' || evento.key === ' ') {
+          evento.preventDefault()
+          abrirDetalhes()
+        }
+      }}
+    >
       <div className="lote-imagem">
         {lote.imagem_url ? (
           <img src={lote.imagem_url} alt={lote.nome} />
@@ -91,22 +53,23 @@ function LoteCard({ lote, token, tipoUsuario }: LoteCardProps) {
 
         <p className="lote-descricao">{lote.descricao}</p>
 
-      <div className="lote-preco">
-        <span>Lance inicial</span>
-        <strong className="lance-inicial">
-          {formatarMoeda(lote.lance_inicial)}
-        </strong>
-      </div>
+        <div className="lote-preco">
+          <span>Lance inicial</span>
+          <strong className="lance-inicial">
+            {formatarMoeda(lote.lance_inicial)}
+          </strong>
+        </div>
 
-      <div className="lote-preco maior-lance">
-        <span>Maior lance atual</span>
-        <strong>{formatarMoeda(lote.maior_lance)}</strong>
-      </div>
+        <div className="lote-preco maior-lance">
+          <span>Maior lance atual</span>
+          <strong>{formatarMoeda(lote.maior_lance)}</strong>
+        </div>
 
         <div className="lote-detalhes">
           <div className="detalhe-item">
-            <span>Incremento mínimo</span>
-            <strong>{formatarMoeda(lote.incremento_minimo)}</strong>
+            <span>Incremento mínimo: 
+              <strong> {formatarMoeda(lote.incremento_minimo)}</strong>
+            </span>
           </div>
 
           <div className="detalhe-item">
@@ -116,38 +79,6 @@ function LoteCard({ lote, token, tipoUsuario }: LoteCardProps) {
             </strong>
           </div>
         </div>
-
-        {tipoUsuario === 'PARTICIPANTE' && token && (
-          <form onSubmit={handleLance} className="form-lance">
-            <label htmlFor={`lance-${lote.id}`}>Seu lance (R$)</label>
-
-            <input
-              id={`lance-${lote.id}`}
-              type="number"
-              min="0.01"
-              step="0.01"
-              value={valor}
-              onChange={(evento) => setValor(evento.target.value)}
-              placeholder="Ex.: 150,00"
-              required
-            />
-
-            <button type="submit" className="lote-botao" disabled={carregando}>
-              {carregando ? 'Enviando...' : 'Dar lance'}
-            </button>
-
-            {mensagem && <p role="status">{mensagem}</p>}
-            {erro && <p role="alert">{erro}</p>}
-          </form>
-        )}
-
-        {!token && (
-          <p>Faça login como participante para dar um lance.</p>
-        )}
-
-        {token && tipoUsuario === 'LEILOEIRO' && (
-          <p>O leiloeiro não pode dar lances.</p>
-        )}
       </div>
     </article>
   )
