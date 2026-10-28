@@ -24,22 +24,22 @@ function App() {
   const [usuarioLogado, setUsuarioLogado] = useState<UsuarioLogado | null>(null)
   const [token, setToken] = useState<string | null>(null)
 
-  useEffect(() => {
-    async function carregarLotes() {
-      try {
-        const dados = await buscarLotes()
-        setLotes(dados)
-      } catch {
-        setErro(
-          'Não foi possível carregar os lotes. Verifique se o Django está funcionando.',
-        )
-      } finally {
-        setCarregando(false)
-      }
+useEffect(() => {
+  async function carregarLotes() {
+    try {
+      const dados = await buscarLotes()
+      setLotes(dados)
+    } catch {
+      setErro(
+        'Não foi possível carregar os leilões. Tente novamente mais tarde.',
+      )
+    } finally {
+      setCarregando(false)
     }
+  }
 
-    carregarLotes()
-  }, [])
+  carregarLotes()
+}, [])
 
   const participanteLogado =
     usuarioLogado?.tipo === 'PARTICIPANTE' && token !== null

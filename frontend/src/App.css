@@ -78,11 +78,12 @@ a {
       rgba(32, 57, 86, 0.93)
     );
   color: var(--branco);
-}
 
+  text-align: center;
+}
 .hero h2 {
   max-width: 700px;
-  margin: 0 0 20px;
+  margin: 0 auto 20px;
   font-size: clamp(32px, 4vw, 48px);
   font-weight: 700;
   line-height: 1.15;
@@ -91,10 +92,9 @@ a {
 
 .hero p {
   max-width: 570px;
-  margin: 0 0 30px;
+  margin: 0 auto 30px;
   color: #d5dce5;
   font-size: 17px;
-  line-height: 1.8;
 }
 
 /* Seção dos leilões */
