@@ -1,6 +1,8 @@
 import type { Lote } from '../types/Lote'
 
-const API_URL = 'http://127.0.0.1:8000/api'
+const API_URL = (
+  import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'
+).replace(/\/$/, '')
 
 export interface Livro {
   titulo: string
@@ -68,6 +70,30 @@ export async function loginUsuario(
   }
 
   return dados as DadosLogin
+}
+
+export async function cadastrarUsuario(
+  username: string,
+  password: string,
+): Promise<void> {
+  const resposta = await fetch(`${API_URL}/cadastro/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+  })
+
+  const dados = await resposta.json()
+
+  if (!resposta.ok) {
+    throw new Error(
+      dados.erro ||
+        dados.username?.[0] ||
+        dados.password?.[0] ||
+        'Não foi possível realizar o cadastro.',
+    )
+  }
 }
 
 export async function depositarSaldo(
