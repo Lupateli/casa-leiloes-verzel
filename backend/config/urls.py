@@ -12,6 +12,7 @@ from auctions.views import (
     HistoricoLancesView,
     DepositarSaldoView,
     LoginView,
+    CadastroView,
 )
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
     path("api/lotes/<int:lote_id>/lances/", HistoricoLancesView.as_view(), name="historico_lances",),
     path("api/carteira/depositar/", DepositarSaldoView.as_view(), name="depositar-saldo",),
     path("api/login/", LoginView.as_view(), name="login"),
+    path("api/cadastro/", CadastroView.as_view(), name="cadastro"),
 ]

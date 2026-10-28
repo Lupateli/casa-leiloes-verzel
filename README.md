@@ -1,30 +1,45 @@
-# Casa de Leilões
+# Casa de Leilões Verzel
 
-API REST para gerenciamento de leilões, desenvolvida em Python com Django e Django REST Framework.
+Plataforma de leilões desenvolvida com **React, TypeScript, Python, Django REST Framework e PostgreSQL**.
 
-O projeto permite cadastrar lotes, receber lances de participantes, controlar valores reservados, encerrar leilões, gerar comprovantes de pagamento e verificar a integridade do histórico de lances.
+O projeto permite gerenciar lotes, realizar lances, controlar saldos de participantes, encerrar leilões e verificar a integridade do histórico de lances. A aplicação também possui uma interface web para facilitar a utilização das funcionalidades.
 
 ## Tecnologias utilizadas
 
-- **Python** — linguagem de programação.
-- **Django** — framework para desenvolvimento da aplicação.
-- **Django REST Framework** — criação dos endpoints da API REST.
-- **PostgreSQL** — banco de dados relacional.
-- **Git e GitHub** — controle de versão e hospedagem do código.
+### Frontend
+- React
+- TypeScript
+- Vite
+
+### Backend
+- Python
+- Django
+- Django REST Framework
+
+### Banco de dados e ferramentas
+- PostgreSQL
+- Git e GitHub
+- API Open Library
 
 ## Funcionalidades
 
+### Cadastro e autenticação
+- Cadastro de participantes.
+- Login de usuários.
+- Controle de acesso conforme o perfil do usuário.
+- Restrição da criação de lotes aos usuários com perfil de leiloeiro.
+
 ### Gerenciamento de lotes
-- Cadastro de lotes pelo leiloeiro.
-- Definição de lance inicial, incremento mínimo e período do leilão.
+- Cadastro de lotes por leiloeiros.
+- Definição do lance inicial, incremento mínimo e período do leilão.
 - Consulta dos lotes cadastrados.
-- Busca de itens utilizando a API Open Library.
+- Pesquisa de livros utilizando a API Open Library.
 
 ### Sistema de lances
 - Validação do valor mínimo permitido.
 - Verificação do saldo disponível do participante.
 - Reserva do valor correspondente ao lance.
-- Liberação do valor reservado pelo participante que perde a liderança.
+- Liberação do valor reservado quando o participante perde a liderança.
 - Bloqueio de novos lances pelo participante que já está liderando o leilão.
 - Prorrogação automática do encerramento quando um lance é recebido nos dois minutos finais.
 
@@ -33,16 +48,16 @@ O projeto permite cadastrar lotes, receber lances de participantes, controlar va
 - Identificação do vencedor.
 - Transferência do valor do lance vencedor para o saldo disponível do leiloeiro.
 - Atualização do saldo reservado do vencedor.
-- Geração de comprovante de pagamento.
+- Geração de comprovantes de pagamento.
 - Tratamento de leilões encerrados sem lances.
 
-### Auditoria
+### Auditoria do histórico
 - Registro do histórico de lances.
 - Utilização de hashes para verificar a integridade dos registros.
 - Identificação de alterações nos dados dos lances.
 
 ### Testes automatizados
-O projeto possui testes automatizados para verificar regras de negócio, incluindo validação de lances, saldo, integridade do histórico e encerramento de leilões.
+O projeto possui testes automatizados para verificar regras de negócio, incluindo validação de lances, controle de saldo, integridade do histórico e encerramento de leilões.
 
 ## Regras de negócio
 
@@ -74,31 +89,38 @@ casa-leiloes-verzel/
 │   └── config/
 │       ├── settings.py
 │       └── urls.py
-├── .env
+├── frontend/
 ├── .gitignore
 └── README.md
 ```
 
-**Observação:** a estrutura acima apresenta os principais arquivos do projeto. Outros arquivos necessários ao funcionamento do Django também fazem parte do repositório.
+A estrutura apresenta os principais diretórios e arquivos. Outros arquivos necessários ao funcionamento da aplicação também fazem parte do projeto.
 
-## Como executar o projeto
+## Como executar localmente
 
 ### Pré-requisitos
 
-- Python 3.10 ou compatível com as dependências instaladas.
+- Python compatível com as dependências do projeto.
+- Node.js e npm.
 - PostgreSQL.
 - Git.
 
 ### 1. Clonar o repositório
 
 ```bash
-git clone URL_DO_REPOSITORIO
+git clone https://github.com/Lupateli/casa-leiloes-verzel.git
 cd casa-leiloes-verzel
 ```
 
-Substitua `URL_DO_REPOSITORIO` pelo endereço do repositório.
+### 2. Configurar o backend
 
-### 2. Criar o ambiente virtual
+Entre na pasta do backend:
+
+```bash
+cd backend
+```
+
+Crie e ative um ambiente virtual.
 
 No Windows, utilizando Git Bash:
 
@@ -107,19 +129,21 @@ python -m venv .venv
 source .venv/Scripts/activate
 ```
 
-### 3. Instalar as dependências
-
-Se o projeto possuir um arquivo `requirements.txt`, execute:
+Instale as dependências:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configurar as variáveis de ambiente
+O comando pressupõe que o arquivo `requirements.txt` esteja dentro da pasta `backend`. Caso esteja em outro local, ajuste o caminho.
 
-Crie um arquivo `.env` na raiz do projeto, seguindo as configurações esperadas em `backend/config/settings.py`.
+### 3. Configurar o PostgreSQL
 
-Exemplo de variáveis para conexão com PostgreSQL:
+Crie um banco de dados PostgreSQL para a aplicação.
+
+Configure as variáveis de ambiente exigidas pelo projeto, conforme a implementação de `backend/config/settings.py`.
+
+Por exemplo, caso a aplicação utilize essas variáveis:
 
 ```env
 DB_NAME=casa_leiloes
@@ -129,71 +153,94 @@ DB_HOST=localhost
 DB_PORT=5432
 ```
 
-Os nomes das variáveis devem corresponder aos utilizados no arquivo de configurações do projeto. Ajuste o exemplo conforme a implementação existente.
+Os nomes acima são ilustrativos e devem corresponder às configurações reais do projeto.
 
-Não publique senhas, chaves ou outras informações confidenciais no repositório.
+**Não compartilhe nem publique senhas, tokens, chaves secretas ou outras credenciais.**
 
-### 5. Preparar o banco de dados
+### 4. Aplicar as migrações
 
-Crie o banco de dados PostgreSQL e execute, na pasta `backend`:
+Ainda na pasta do backend, execute:
 
 ```bash
 python manage.py migrate
 ```
 
-### 6. Criar um superusuário
+### 5. Criar um superusuário
+
+Para acessar a área administrativa do Django:
 
 ```bash
 python manage.py createsuperuser
 ```
 
-O superusuário poderá acessar a área administrativa do Django.
+Essa conta é destinada à administração da aplicação. Para testar as funcionalidades comuns, utilize contas com os perfis apropriados.
 
-### 7. Iniciar o servidor
-
-Ainda na pasta `backend`, execute:
+### 6. Iniciar o backend
 
 ```bash
 python manage.py runserver
 ```
 
-Por padrão, o servidor estará disponível em:
+Por padrão, a API estará disponível em:
 
-```text
-http://127.0.0.1:8000/
-```
+`http://127.0.0.1:8000/`
 
 A área administrativa poderá ser acessada em `/admin/`.
 
-## Endpoints da API
+### 7. Iniciar o frontend
 
-Os endpoints implementados incluem:
+Abra outro terminal e entre na pasta do frontend:
+
+```bash
+cd frontend
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Inicie o servidor de desenvolvimento:
+
+```bash
+npm run dev
+```
+
+O Vite exibirá no terminal o endereço local para acessar a interface.
+
+**Observação:** as instruções de instalação e as variáveis de ambiente devem ser ajustadas caso a estrutura ou as configurações reais do repositório sejam diferentes.
+
+## Endpoints da API
 
 | Método | Endpoint | Descrição |
 |---|---|---|
 | GET | `/api/health/` | Verifica o funcionamento da API. |
+| POST | `/api/cadastro/` | Cadastra um participante. |
+| POST | `/api/login/` | Autentica um usuário. |
 | GET | `/api/lotes/` | Consulta os lotes. |
-| GET | `/api/livros/buscar/` | Busca livros na Open Library. |
+| GET | `/api/livros/buscar/` | Pesquisa livros na Open Library. |
 | POST | `/api/lotes/criar/` | Cadastra um lote. |
 | POST | `/api/lances/criar/` | Registra um lance. |
 | GET | `/api/lotes/<lote_id>/lances/` | Consulta o histórico de lances de um lote. |
 | GET | `/api/lotes/<lote_id>/auditoria/` | Verifica a integridade do histórico. |
 | POST | `/api/lotes/<lote_id>/encerrar/` | Encerra um leilão. |
 | GET | `/api/comprovantes/` | Consulta comprovantes. |
+| POST | `/api/carteira/depositar/` | Realiza um depósito na carteira. |
 
-Os endpoints protegidos exigem autenticação e podem aplicar restrições de acesso conforme o perfil do usuário.
+Os endpoints podem exigir autenticação e aplicar restrições de acesso conforme o perfil do usuário.
 
-Para autenticação pela interface do Django REST Framework, consulte `/api-auth/login/`.
+A autenticação da API é realizada pelo endpoint `/api/login/`. O acesso à interface navegável do Django REST Framework, quando habilitado, é disponibilizado por `/api-auth/`.
 
 ## Executando os testes
 
-Entre na pasta `backend` e execute:
+Na pasta `backend`, execute:
 
 ```bash
 python manage.py test
 ```
 
-Os testes automatizados verificam diferentes comportamentos da aplicação, ajudando a identificar falhas nas regras de negócio durante o desenvolvimento.
+Os testes automatizados ajudam a verificar o comportamento da aplicação e a identificar falhas nas regras de negócio durante o desenvolvimento.
 
 ## Decisões técnicas
 
@@ -205,25 +252,23 @@ Essa organização facilita a manutenção do código e permite testar as regras
 
 ### Transações e concorrência
 
-As operações financeiras utilizam transações para reduzir o risco de inconsistências durante o registro de lances e o encerramento dos leilões.
+As operações críticas utilizam transações para reduzir o risco de inconsistências durante o registro de lances e o encerramento dos leilões.
 
-O projeto utiliza bloqueios de registros em operações críticas para ajudar a controlar acessos concorrentes ao mesmo lote.
+O uso de bloqueios de registros ajuda a controlar acessos concorrentes ao mesmo lote.
 
 ### Integridade do histórico
 
 Os registros de lances possuem hashes que permitem verificar se os dados registrados foram alterados.
 
-Esse mecanismo ajuda a detectar alterações nos registros, mas não substitui controles completos de segurança, como proteção contra adulteração do banco de dados e armazenamento externo dos registros de auditoria.
+Esse mecanismo ajuda a detectar alterações, mas não substitui controles adicionais de segurança, como proteção contra adulteração do banco de dados e armazenamento externo dos registros de auditoria.
 
-## Integração externa
+### Integração externa
 
-O projeto utiliza a API Open Library para pesquisar livros e obter informações que podem ser utilizadas na criação de lotes.
-
-A consulta externa é uma funcionalidade complementar ao gerenciamento dos leilões.
+A aplicação utiliza a API Open Library para pesquisar livros e obter informações que podem ser utilizadas na criação de lotes.
 
 ## Uso de inteligência artificial
 
-O desenvolvimento contou com apoio de ferramentas de inteligência artificial para auxiliar no estudo, na implementação, na análise de erros e na revisão do código.
+O desenvolvimento contou com o apoio de ferramentas de inteligência artificial para auxiliar no estudo, na implementação, na análise de erros e na revisão do código.
 
 As decisões de implementação, os testes e a validação do funcionamento da aplicação fazem parte do processo de desenvolvimento do projeto.
 
@@ -231,4 +276,4 @@ As decisões de implementação, os testes e a validação do funcionamento da a
 
 Desenvolvido como projeto de preparação para processo seletivo técnico.
 
-- **GitHub:** (https://github.com/Lupateli/casa-leiloes-verzel/tree/main/backend/auctions)
+- **GitHub:** [Repositório do projeto](https://github.com/Lupateli/casa-leiloes-verzel)

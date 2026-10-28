@@ -6,15 +6,17 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
+from django.contrib.auth import get_user_model
+from rest_framework.permissions import AllowAny
 
 
-from .models import Lote, Lance, Comprovante, Carteira
+from .models import Lote, Lance, Comprovante, Carteira, Usuario
 from .serializers import LoteSerializer, LanceSerializer, ComprovanteSerializer
 from .services import buscar_livros
 from .services_lances import registrar_lance, verificar_historico
 from .services_encerramento import encerrar_leilao
 
-    
+
 
 @api_view(["GET"])
 def health_check(request):
@@ -258,4 +260,46 @@ class LoginView(ObtainAuthToken):
                 "tipo": usuario.tipo,
             },
         }, status=status.HTTP_200_OK)
-    
+
+class CadastroView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        username = request.data.get("username", "").strip()
+        password = request.data.get("password", "")
+
+        if not username or not password:
+            return Response(
+                {"erro": "Informe o nome de usuário e a senha."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if Usuario.objects.filter(username=username).exists():
+            return Response(
+                {"erro": "Esse nome de usuário já está cadastrado."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if len(password) < 8:
+            return Response(
+                {"erro": "A senha deve ter pelo menos 8 caracteres."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        usuario = Usuario.objects.create_user(
+            username=username,
+            password=password,
+            tipo=Usuario.PARTICIPANTE,
+        )
+
+        return Response(
+            {
+                "mensagem": "Usuário cadastrado com sucesso.",
+                "usuario": {
+                    "id": usuario.id,
+                    "username": usuario.username,
+                    "tipo": usuario.tipo,
+                },
+            },
+            status=status.HTTP_201_CREATED,
+        )
