@@ -196,7 +196,7 @@ function CriarLote({ token }: CriarLoteProps) {
       </header>
 
 
-"        {!livroSelecionado && (
+      {!livroSelecionado && (
         <section className="criar-lote-secao criar-lote-pesquisa">
           <h2>1. Escolha o livro</h2>
 
@@ -225,9 +225,7 @@ function CriarLote({ token }: CriarLoteProps) {
           {livros.length > 0 && (
             <div className="criar-lote-livros">
               {livros.map((livro: Livro) => {
-                const selecionado =
-                  livroSelecionado?.open_library_id === livro.open_library_id
-
+                const selecionado = false
                 return (
                   <article
                     className={`criar-lote-livro ${selecionado ? 'selecionado' : ''}`}
