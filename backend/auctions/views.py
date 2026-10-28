@@ -16,6 +16,9 @@ from .services import buscar_livros
 from .services_lances import registrar_lance, verificar_historico
 from .services_encerramento import encerrar_leilao
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @api_view(["GET"])
@@ -286,11 +289,18 @@ class CadastroView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        usuario = Usuario.objects.create_user(
-            username=username,
-            password=password,
-            tipo=Usuario.PARTICIPANTE,
-        )
+        try:
+            usuario = Usuario.objects.create_user(
+                username=username,
+                password=password,
+                tipo=Usuario.PARTICIPANTE,
+            )
+        except Exception:
+            logger.exception("Erro ao criar usuário no endpoint de cadastro.")
+            return Response(
+                {"erro": "Não foi possível concluir o cadastro."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
         return Response(
             {
