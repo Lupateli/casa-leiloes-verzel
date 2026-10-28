@@ -1,0 +1,275 @@
+/* Área de pesquisa */
+.criar-lote-pesquisa {
+  margin-bottom: 30px;
+}
+
+.criar-lote-pesquisa h2 {
+  margin-bottom: 20px;
+  color: #14243a;
+  font-size: 20px;
+}
+
+/* Formulário de pesquisa */
+.criar-lote-pesquisa form {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;  
+}
+
+.criar-lote-pesquisa form .criar-lote-campo {
+  flex: 1;
+  min-width: 0;
+}
+
+.criar-lote-pesquisa form button {
+  flex-shrink: 0;
+  padding: 12px 8px;
+  background-color: #0e4916d2;
+  border-radius: 5%;
+}
+
+/* Catálogo de livros */
+.criar-lote-livros {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Card individual */
+.criar-lote-livro {
+  display: flex;
+  gap: 16px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.criar-lote-livro:hover {
+  border-color: #c5a15b;
+}
+
+.criar-lote-livro.selecionado {
+  border-color: #c5a15b;
+  background: #fcfaf5;
+}
+
+/* Capa */
+.criar-lote-livro img,
+.criar-lote-sem-capa {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 130px;
+  border-radius: 4px;
+  background: #f3f4f6;
+}
+
+.criar-lote-livro img {
+  object-fit: contain;
+}
+
+.criar-lote-sem-capa {
+  color: #687386;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Informações do livro */
+.criar-lote-livro-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  gap: 8px;
+}
+
+.criar-lote-livro-info h3 {
+  margin: 0;
+  color: #14243a;
+  font-size: 16px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.criar-lote-livro-info p {
+  margin: 0;
+  color: #687386;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.criar-lote-livro-info small {
+  color: #a7833f;
+  font-size: 12px;
+}
+
+/* Botão de seleção */
+.criar-lote-livro-info button {
+  width: 100%;
+  margin-top: auto;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.criar-lote-livro.selecionado .criar-lote-livro-info button {
+  border-color: #c5a15b;
+  background: #f5edda;
+  color: #14243a;
+}
+
+/* Confirmação da seleção */
+.criar-lote-livro-confirmado {
+  margin-bottom: 22px;
+  padding: 14px 16px;
+  border-left: 3px solid #c5a15b;
+  background: #fcfaf5;
+  color: #14243a;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* Responsividade */
+@media (max-width: 760px) {
+  .criar-lote-livros {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .criar-lote-pesquisa form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .criar-lote-pesquisa form button {
+    width: 100%;
+  }
+
+  .criar-lote-livro {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .criar-lote-livro img,
+  .criar-lote-sem-capa {
+    width: 75px;
+    height: 110px;
+  }
+}
+.criar-lote-campo input,
+.criar-lote-campo textarea,
+.criar-lote-campo select {
+  width: 70%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #14243a;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.criar-lote-campo input:focus,
+.criar-lote-campo textarea:focus,
+.criar-lote-campo select:focus {
+  outline: none;
+  border-color: #c5a15b;
+}
+
+.criar-lote-campo label {
+  display: block;
+  margin-bottom: 8px;
+  color: #14243a;
+  font-weight: 500;
+}
+.criar-lote-cabecalho h1 {
+  color: #14243a;
+}
+.criar-lote-formulario h2{
+  color: #14243a;
+}
+
+/* Área dos botões */
+.criar-lote-acoes {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+/* Estilo comum aos botões */
+.criar-lote-acoes button,
+.criar-lote-acoes a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  padding: 12px 22px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease,
+              border-color 0.2s ease,
+              transform 0.2s ease;
+}
+
+/* Botão Voltar */
+.criar-lote-acoes .criar-lote-voltar {
+  background-color: #ffffff;
+  color: #14243a;
+  border-color: #d1d5db;
+}
+
+.criar-lote-acoes .criar-lote-voltar:hover {
+  background-color: #f3f4f6;
+  border-color: #14243a;
+}
+
+/* Botão Cadastrar lote */
+.criar-lote-acoes .criar-lote-enviar {
+  background-color: #14243a;
+  color: #ffffff;
+  border-color: #14243a;
+}
+
+.criar-lote-acoes .criar-lote-enviar:hover:not(:disabled) {
+  background-color: #263e5b;
+  border-color: #263e5b;
+  transform: translateY(-1px);
+}
+
+/* Botão desabilitado */
+.criar-lote-acoes button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Layout para telas menores */
+@media (max-width: 600px) {
+  .criar-lote-acoes {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .criar-lote-acoes button,
+  .criar-lote-acoes a {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

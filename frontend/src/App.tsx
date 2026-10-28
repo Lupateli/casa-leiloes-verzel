@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
+import { Navigate, Routes, Route } from 'react-router-dom'
 import Header from './components/Header/Header'
 import LoginModal from './components/LoginModal/LoginModal'
 import LoteCard from './components/LoteCard/LoteCard'
+import Deposito from './components/Deposito/Deposito'
+import DetalhesLote from './pages/DetalhesLote/DetalhesLote'
 import { buscarLotes } from './services/api'
 import type { Lote } from './types/Lote'
 import './App.css'
-import Deposito from './components/Deposito/Deposito'
-import { Routes, Route } from 'react-router-dom'
-import DetalhesLote from './pages/DetalhesLote/DetalhesLote'
+import CriarLote from './pages/CriarLote/CriarLote'
 
 interface UsuarioLogado {
   id: number
@@ -40,30 +41,31 @@ function App() {
     carregarLotes()
   }, [])
 
+  const participanteLogado =
+    usuarioLogado?.tipo === 'PARTICIPANTE' && token !== null
+
   return (
     <div className="app">
-      <Header onLoginClick={() => setMostrarLogin(true)} />
-
-      {usuarioLogado && (
-        <div className="usuario-logado">
-          Olá, {usuarioLogado.username}!
-          {' — '}
-          {usuarioLogado.tipo === 'LEILOEIRO' ? 'Leiloeiro' : 'Participante'}
-
-          <button
-            type="button"
-            onClick={() => {
-              setUsuarioLogado(null)
-              setToken(null)
-            }}
-          >
-            Sair
-          </button>
-        </div>
-      )}
-
+      <Header
+        onLoginClick={() => setMostrarLogin(true)}
+        usuario={usuarioLogado}
+        onLogout={() => {
+          setUsuarioLogado(null)
+          setToken(null)
+        }}
+      />
 
       <Routes>
+        <Route
+          path="/criar-lote"
+          element={
+            usuarioLogado?.tipo === 'LEILOEIRO' && token ? (
+              <CriarLote token={token} />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
         <Route
           path="/"
           element={
@@ -94,10 +96,7 @@ function App() {
                 {!erro && lotes.length > 0 && (
                   <div className="lotes-grid">
                     {lotes.map((lote) => (
-                      <LoteCard
-                        key={lote.id}
-                        lote={lote}
-                      />
+                      <LoteCard key={lote.id} lote={lote} />
                     ))}
                   </div>
                 )}
@@ -115,6 +114,22 @@ function App() {
             />
           }
         />
+
+        <Route
+          path="/carteira"
+          element={
+            participanteLogado && token ? (
+              <Deposito token={token} />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+
+        <Route
+          path="*"
+          element={<Navigate to="/" replace />}
+        />
       </Routes>
 
       <footer>
@@ -127,6 +142,7 @@ function App() {
           onLoginSuccess={(usuario, tokenRecebido) => {
             setUsuarioLogado(usuario)
             setToken(tokenRecebido)
+            setMostrarLogin(false)
           }}
         />
       )}
