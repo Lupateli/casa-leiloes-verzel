@@ -295,10 +295,13 @@ class CadastroView(APIView):
                 password=password,
                 tipo=Usuario.PARTICIPANTE,
             )
-        except Exception:
+        except Exception as erro:
             logger.exception("Erro ao criar usuário no endpoint de cadastro.")
             return Response(
-                {"erro": "Não foi possível concluir o cadastro."},
+                {
+                    "erro": "Não foi possível concluir o cadastro.",
+                    "detalhe": str(erro),
+                },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
