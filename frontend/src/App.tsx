@@ -21,8 +21,15 @@ function App() {
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState('')
   const [mostrarLogin, setMostrarLogin] = useState(false)
-  const [usuarioLogado, setUsuarioLogado] = useState<UsuarioLogado | null>(null)
-  const [token, setToken] = useState<string | null>(null)
+  const [usuarioLogado, setUsuarioLogado] = useState<UsuarioLogado | null>(() => {
+    const usuarioSalvo = localStorage.getItem('usuarioLogado')
+    return usuarioSalvo ? JSON.parse(usuarioSalvo) : null
+  })
+
+  const [token, setToken] = useState<string | null>(() => {
+    return localStorage.getItem('token')
+  })
+
 
 useEffect(() => {
   async function carregarLotes() {
