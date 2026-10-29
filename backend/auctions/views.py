@@ -8,7 +8,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import AllowAny
-
+from django.utils import timezone
 
 from .models import Lote, Lance, Comprovante, Carteira, Usuario
 from .serializers import LoteSerializer, LanceSerializer, ComprovanteSerializer
@@ -29,9 +29,25 @@ def health_check(request):
         "mensagem": "API funcionando!"
     })
 
+
 class ListaLotesView(generics.ListAPIView):
     serializer_class = LoteSerializer
-    queryset = Lote.objects.all().order_by("-criado_em")
+
+    def get_queryset(self):
+        agora = timezone.now()
+
+        Lote.objects.filter(
+            status=Lote.Status.AGENDADO,
+            inicio__lte=agora,
+            encerramento__gt=agora,
+        ).update(status=Lote.Status.ABERTO)
+
+        Lote.objects.filter(
+            status__in=[Lote.Status.AGENDADO, Lote.Status.ABERTO],
+            encerramento__lte=agora,
+        ).update(status=Lote.Status.ENCERRADO)
+
+        return Lote.objects.all().order_by("-criado_em")
 
 
 @api_view(["GET"])
@@ -237,7 +253,7 @@ class DepositarSaldoView(APIView):
             )
             saldo_atual = Decimal(str(carteira.saldo_disponivel))
             carteira.saldo_disponivel = saldo_atual + valor
-            
+
             carteira.save(update_fields=["saldo_disponivel"])
 
         return Response({
