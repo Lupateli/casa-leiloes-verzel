@@ -57,9 +57,13 @@ useEffect(() => {
         onLoginClick={() => setMostrarLogin(true)}
         usuario={usuarioLogado}
         onLogout={() => {
+          localStorage.removeItem('usuarioLogado')
+          localStorage.removeItem('token')
+
           setUsuarioLogado(null)
           setToken(null)
         }}
+
       />
 
       <Routes>
@@ -147,6 +151,9 @@ useEffect(() => {
         <LoginModal
           onClose={() => setMostrarLogin(false)}
           onLoginSuccess={(usuario, tokenRecebido) => {
+            localStorage.setItem('usuarioLogado', JSON.stringify(usuario))
+            localStorage.setItem('token', tokenRecebido)
+
             setUsuarioLogado(usuario)
             setToken(tokenRecebido)
             setMostrarLogin(false)
