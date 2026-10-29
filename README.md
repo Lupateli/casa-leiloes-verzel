@@ -277,3 +277,16 @@ As decisões de implementação, os testes e a validação do funcionamento da a
 Desenvolvido como projeto de preparação para processo seletivo técnico.
 
 - **GitHub:** [Repositório do projeto](https://github.com/Lupateli/casa-leiloes-verzel)
+
+##  Conta para testes de leiloeiro
+
+Para testar todas as funcionalidades da plataforma, utilize as contas disponibilizadas abaixo.
+
+### 🔨 Leiloeiro
+Utilize uma conta de leiloeiro para:
+- Cadastrar novos lotes.
+- Gerenciar os lotes disponíveis na plataforma.
+- user:Gabriel
+- senha:12345678
+
+**Importante:** o cadastro de novas contas de leiloeiro não está disponível publicamente. Para testar essa funcionalidade, utilize a conta de leiloeiro fornecida para os testes.
