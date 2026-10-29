@@ -142,6 +142,7 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://casa-leiloes-verzel-ktd9.vercel.app",
+    "https://casa-leiloes-verzel-tau.vercel.app",
 ]
 
 LOGGING = {
