@@ -235,7 +235,9 @@ class DepositarSaldoView(APIView):
             carteira, _ = Carteira.objects.get_or_create(
                 usuario=request.user
             )
-            carteira.saldo_disponivel += valor
+            saldo_atual = Decimal(str(carteira.saldo_disponivel))
+            carteira.saldo_disponivel = saldo_atual + valor
+            
             carteira.save(update_fields=["saldo_disponivel"])
 
         return Response({
