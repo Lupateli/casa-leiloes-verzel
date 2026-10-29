@@ -162,8 +162,8 @@ function CriarLote({ token }: CriarLoteProps) {
           api_item_id: formulario.api_item_id,
           lance_inicial: lanceInicial,
           incremento_minimo: incrementoMinimo,
-          inicio: inicio.toISOString(),
-          encerramento: encerramento.toISOString(),
+          inicio: formulario.inicio,
+          encerramento: formulario.encerramento,
         },
         token,
       )

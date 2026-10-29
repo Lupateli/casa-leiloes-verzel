@@ -128,18 +128,20 @@ function DetalhesLote({
     }, [id])
 
     function calcularLanceAutomatico(): number {
-    if (!lote) return 0
+        if (!lote) return 0
 
-    const lanceInicial = Math.round(Number(lote.lance_inicial) * 100)
-    const maiorLance = Math.round(Number(lote.maior_lance) * 100)
-    const incremento = Math.round(Number(lote.incremento_minimo) * 100)
+        const lanceInicial = Math.round(Number(lote.lance_inicial) * 100)
+        const maiorLance = Math.round(Number(lote.maior_lance) * 100)
+        const incremento = Math.round(Number(lote.incremento_minimo) * 100)
 
-    const valorMinimo = historico.length === 0
-        ? lanceInicial
-        : maiorLance + incremento
+        const valorMinimo =
+            historico.length === 0
+            ? lanceInicial + incremento
+            : maiorLance + incremento
 
-    return valorMinimo / 100
-}
+        return valorMinimo / 100
+    }
+
 
 
   function solicitarConfirmacao(valor: number) {
